@@ -1,6 +1,8 @@
 import express from "express";
 import jwt from "jsonwebtoken"
 
+const JWT_SECRET = "sillyCoderPritam25"
+
 const app = express();
 app.use(express.json()); // parse the data came from request body
 
@@ -50,8 +52,14 @@ function signInHandler(req, res) {
     });
 
     if (isUser) {
-        const token = createToken().trim();
-        isUser.token = token;
+        // const token = createToken().trim();
+        // isUser.token = token;   //no need to add token to isUser anymore because of jwt use
+
+        //* create token using jwt sign() method -->
+        const token = jwt.sign({
+            username: username
+        }, JWT_SECRET)
+        
         res.status(200).json({
             success: true,
             token: token
@@ -70,16 +78,18 @@ function signInHandler(req, res) {
 //* function to get user details
 function getMyDetails(req, res) {
     const mytoken = req.headers.token;
+    const decodedInformation = jwt.verify(mytoken, JWT_SECRET)
+    const username = decodedInformation.username
 
     const findUser = users.find(function (user) {
-        if (user.token === mytoken) return true
+        if (user.username === username) return true
         else return false
     })
 
     if (findUser) {
         res.status(200).json({
-            success: true,
-            message: users
+            username: findUser.username,
+            password: findUser.password
         })
     } else {
         res.status(500).json({
