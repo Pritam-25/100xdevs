@@ -9,12 +9,17 @@ const User = new Schema({
     password: { type: String, require: true }
 })
 
+//* Todo Schema
 const Todo = new Schema({
-    title: { type: String, require: true },
+    title: { type: String, required: true },
     description: String,
-    userId: ObjectId,
-    isDone: Boolean
-})
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User" // Reference the 'User' model
+    },
+    isDone: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+});
 
 const UserModel = mongoose.model("user", User)
 const TodoModel = mongoose.model("todo", Todo)

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false, // not showing error on not define type
+    "rootDir": "./src",     // all ts file
+    "outDir": "./dist",     // all js file
+    "noEmitOnError": true,  // if any error then not convert into js file
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

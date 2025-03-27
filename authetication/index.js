@@ -1,5 +1,5 @@
-import express from "express";
-import jwt from "jsonwebtoken"
+const express = require("express")
+const jwt = require("jsonwebtoken")
 
 const JWT_SECRET = "sillyCoderPritam25"
 
@@ -21,6 +21,25 @@ const users = [];
 //     return token;
 // }
 
+
+//* auth middleware --->
+function authMiddleware(req, res, next) {
+    const token = req.headers.token
+    const decdedData = jwt.verify(token, JWT_SECRET)
+
+    const username = decdedData.username
+    const AutheticatedUser = users.find(user => username === user.username)
+
+    req.user = AutheticatedUser // attach user to request 
+    if (!AutheticatedUser) {
+        res.json({
+            message: "not authenticated user. please sing in"
+        })
+    }
+    else next();
+}
+
+
 //* function to handel sign up
 function signUpHandler(req, res) {
     const username = req.body.username;
@@ -35,8 +54,9 @@ function signUpHandler(req, res) {
         success: true,
         message: "you are signed up"
     })
-    console.log(users);
 };
+
+
 
 //* function to handel sign in
 function signInHandler(req, res) {
@@ -59,7 +79,9 @@ function signInHandler(req, res) {
         const token = jwt.sign({
             username: username
         }, JWT_SECRET)
-        
+
+        res.header("jwt", token) // send token in header
+
         res.status(200).json({
             success: true,
             token: token
@@ -71,37 +93,25 @@ function signInHandler(req, res) {
             message: "Invalid user"
         });
     }
-    console.log(users);
-
 };
 
 //* function to get user details
 function getMyDetails(req, res) {
-    const mytoken = req.headers.token;
-    const decodedInformation = jwt.verify(mytoken, JWT_SECRET)
-    const username = decodedInformation.username
-
-    const findUser = users.find(function (user) {
-        if (user.username === username) return true
-        else return false
+    res.status(200).json({
+        username: req.user.username,   // get username and pasword from req.user what i attach in middleware
+        password: req.user.password
     })
-
-    if (findUser) {
-        res.status(200).json({
-            username: findUser.username,
-            password: findUser.password
-        })
-    } else {
-        res.status(500).json({
-            success: false,
-            message: "not a authenticated user!"
-        })
-    }
 }
+
+app.get("/", function(req, res) {
+    res.sendFile(__dirname + "/public/index.html")
+})
 
 //* routes
 app.post("/signUp", signUpHandler);
 app.post("/signIn", signInHandler);
-app.get("/me", getMyDetails)
+app.get("/me", authMiddleware, getMyDetails)
+const port =  3000
+app.listen(port);
+console.log(`app listen port: ${port}`);
 
-app.listen(3000);

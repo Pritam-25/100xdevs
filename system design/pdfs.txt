@@ -67,3 +67,8 @@
 34. https://drive.google.com/file/d/1E2PZoA5R64npMztxKRuLGzqYk9Ovl53d/view
 
 35. https://drive.google.com/file/d/1iynQJ_1ZYMYS-V3mThtMPFsqarhVI08m/view
+
+
+https://github.com/ashishps1/awesome-system-design-resources
+https://github.com/donnemartin/system-design-primer
+https://github.com/binhnguyennus/awesome-scalability

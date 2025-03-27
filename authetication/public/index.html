@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+<script>
+
+    // singup function implementation ---->
+    async function signUp() {
+        const username = document.getElementById("singup-username").value;
+        const password = document.getElementById("singup-password").value;
+
+        await axios.post("http://localhost:3000/signUp", {
+            username: username,
+            password: password
+        })
+        alert("you are singed in")
+        // console.log(response);
+    }
+
+
+    // signin function implementation ---->
+    async function signIn() {
+        const username = document.getElementById("singin-username").value;
+        const password = document.getElementById("singin-password").value;
+
+        const response = await axios.post("http://localhost:3000/signIn", {
+            username: username,
+            password: password
+        })
+
+        localStorage.setItem("token", response.data.token)
+    }
+
+    // get user details function --->
+    async function getUserDetails() {
+        const response = await axios.get("http://localhost:3000/me", {
+            headers: {
+                token: localStorage.getItem("token")   // extract token from localstorage headers
+            }
+        })
+
+        document.getElementById("userDetails").innerHTML = "username: " + response.data.username + ", password: " + response.data.password
+    }
+
+    // implement logout functionality ---->
+    async function logout() {
+        localStorage.removeItem("token")
+    }
+</script>
+
+<body>
+    <div>
+        SignUp
+        <input type="text" id="singup-username" name="username" placeholder="username">
+        <input type="text" id="singup-password" name="password" placeholder="password">
+        <button onclick="signUp()">Sign Up</button>
+    </div>
+    <br>
+    <div>
+        SignIn
+        <input type="text" id="singin-username" name="username" placeholder="username">
+        <input type="text" id="singin-password" name="password" placeholder="password">
+        <button onclick="signIn()">Sign In</button>
+    </div>
+    <br>
+    <button onclick="getUserDetails()">Get user details</button>
+    <div id="userDetails">user details: </div>
+    <br>
+    <button type="submit" onclick="logout()">Log out</button>
+</body>
+
+</html>
